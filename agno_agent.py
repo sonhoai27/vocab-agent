@@ -54,4 +54,5 @@ vocab_agent = Agent(
     num_history_runs=15,
     read_chat_history=True,
     tools=[get_random_words],
+    store_tool_messages=False,
 )
