@@ -87,6 +87,7 @@ Giờ mình vô luôn nghĩa của từ này.”
 
 UI OUTPUT:
 <hints>
+  <hint>OK</hint>
   <hint>Pause</hint>
 </hints>
 
