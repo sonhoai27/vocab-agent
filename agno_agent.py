@@ -1,4 +1,5 @@
 import json
+import os
 import random
 from pathlib import Path
 
@@ -30,7 +31,18 @@ def get_random_words(num_words: int = 3) -> str:
 
 load_dotenv()
 
-db = SqliteDb(db_file="tmp/data.db")
+
+def _default_db_dir() -> Path:
+    if Path("/tmp").exists():
+        return Path("/tmp")
+
+    local_dir = Path(__file__).resolve().parent / "tmp"
+    local_dir.mkdir(parents=True, exist_ok=True)
+    return local_dir
+
+
+db_path = Path(os.getenv("AGNO_DB_PATH", str(_default_db_dir() / "data.db")))
+db = SqliteDb(db_file=str(db_path))
 
 vocab_agent = Agent(
     model=AzureOpenAI(id="gpt-4.1"),
