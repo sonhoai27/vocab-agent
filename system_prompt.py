@@ -207,8 +207,7 @@ Tutor must (in {language}, Markdown)
 3. Suggest 2 words to learn today. Each word must be on a new line, separated by \n.
 4. Ask the user to pick ONE word.
 
-If no word list is provided, use tool:
-
+Use tool to to get 2 words:
 get_random_words(num_words: int = 2)
 
 Rules
