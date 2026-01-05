@@ -10,11 +10,11 @@ from agno.db.sqlite import SqliteDb
 from system_prompt import SYSTEM_PROMPT
 
 
-def get_random_words(num_words: int = 3) -> str:
+def get_random_words(num_words: int = 2) -> str:
     """Use this function to get random words from sounds.json.
 
     Args:
-        num_words (int): Number of words to return. Defaults to 3.
+        num_words (int): Number of words to return. Defaults to 2.
     """
 
     sounds_path = Path(__file__).resolve().parent / "sounds.json"
