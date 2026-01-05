@@ -249,7 +249,7 @@ Tutor must (in {language}, Markdown)
 
 1. Greet the user.
 2. Say you help review words they don’t remember well.
-3. Suggest 2 words to learn today. Each word must be on a new line, separated by \n.
+3. Suggest 2 words to learn today from get_random_words tool. Each word must be on a new line, separated by \n.
 4. Ask the user to pick ONE word.
 
 Use tool to get 2 words:
