@@ -2,7 +2,6 @@ from agno.os import AgentOS
 from fastapi import FastAPI
 from agno.agent import Agent
 from agno_agent import vocab_agent
-from history_router import router as history_router
 
 app: FastAPI = FastAPI(
     title="Custom FastAPI App",
@@ -16,7 +15,6 @@ agent_os = AgentOS(
 )
 
 app = agent_os.get_app()
-app.include_router(history_router)
 
 if __name__ == "__main__":
     """Run the AgentOS application.
