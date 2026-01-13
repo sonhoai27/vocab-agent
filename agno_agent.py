@@ -1,28 +1,21 @@
 import json
 import os
 import random
-from pathlib import Path
 
 from agno.agent import Agent
 from agno.models.azure import AzureOpenAI
 from dotenv import load_dotenv
-from agno.db.sqlite import SqliteDb
+from agno.db.mongo import MongoDb
 from system_prompt import SYSTEM_PROMPT
 
 load_dotenv()
 
 
-def _default_db_dir() -> Path:
-    if Path("/tmp").exists():
-        return Path("/tmp")
-
-    local_dir = Path(__file__).resolve().parent / "tmp"
-    local_dir.mkdir(parents=True, exist_ok=True)
-    return local_dir
-
-
-db_path = Path(os.getenv("AGNO_DB_PATH", str(_default_db_dir() / "data_2.db")))
-db = SqliteDb(db_file=str(db_path))
+db_url = os.getenv(
+    "AGNO_MONGO_URL",
+    "mongodb+srv://project0:m89NF6G8YOHPXwrJ@cluster0.hujdnhm.mongodb.net/?appName=Cluster0",
+)
+db = MongoDb(db_url=db_url)
 
 vocab_agent = Agent(
     model=AzureOpenAI(id="gpt-4.1"),
