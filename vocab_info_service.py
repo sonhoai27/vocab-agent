@@ -60,6 +60,7 @@ async def get_vocab_info(vocab: str, language: str) -> Dict[str, Any]:
     """
     # Kiểm tra cache trước
     cached_data = get_cached_vocab_info(vocab, language)
+
     if cached_data:
         return cached_data
     

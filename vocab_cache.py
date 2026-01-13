@@ -3,10 +3,13 @@ MongoDB cache functions cho vocab info
 """
 from datetime import datetime
 from typing import Optional, Dict, Any
+import os
 import pymongo
 
 
 CACHE_COLLECTION = "vocab_cache"
+# Database name: ưu tiên environment variable, nếu không có thì dùng "vocab" làm mặc định
+DATABASE_NAME = os.getenv("MONGODB_DATABASE_NAME", "vocab")
 _db_instance = None
 
 
@@ -41,24 +44,38 @@ def _get_collection():
         db = _get_db()
         if db is None:
             return None
-            
-        # Thử các cách truy cập collection
+        
+        # MongoDb từ agno có db_client attribute
+        if hasattr(db, 'db_client'):
+            client = db.db_client
+            # Lấy database "vocab" từ client
+            database = client.get_database(DATABASE_NAME)
+            collection = database[CACHE_COLLECTION]
+            return collection
+        
+        # Fallback: thử các cách khác nếu db_client không có
         if hasattr(db, 'client'):
-            # Nếu db có client attribute (pymongo client)
-            database = db.client.get_database()
-            return database[CACHE_COLLECTION]
-        elif hasattr(db, 'db'):
-            # Nếu db có db attribute
-            return db.db[CACHE_COLLECTION]
-        elif hasattr(db, 'get_collection'):
-            # Nếu db có method get_collection
-            return db.get_collection(CACHE_COLLECTION)
-        elif isinstance(db, pymongo.database.Database):
-            # Nếu db là Database instance
-            return db[CACHE_COLLECTION]
-        else:
-            # Fallback: thử truy cập như dictionary
-            return db[CACHE_COLLECTION] if hasattr(db, '__getitem__') else None
+            client = db.client
+            if isinstance(client, pymongo.MongoClient):
+                database = client.get_database(DATABASE_NAME)
+                collection = database[CACHE_COLLECTION]
+                return collection
+        
+        # Nếu có database attribute nhưng cần database khác
+        if hasattr(db, 'database'):
+            db_instance = db.database
+            if isinstance(db_instance, pymongo.database.Database):
+                # Lấy client từ database instance và tạo database mới
+                client = db_instance.client
+                database = client.get_database(DATABASE_NAME)
+                collection = database[CACHE_COLLECTION]
+                return collection
+        
+        # Nếu có _get_collection method, có thể dùng nhưng cần chỉ định database
+        # Tuy nhiên method này có thể chỉ dùng database mặc định
+        # Nên tốt nhất là dùng db_client trực tiếp
+        
+        return None
     except (pymongo.errors.ServerSelectionTimeoutError, 
             pymongo.errors.NetworkTimeout,
             ConnectionError,
@@ -67,6 +84,8 @@ def _get_collection():
         return None
     except Exception as e:
         print(f"Warning: Error getting collection: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 
@@ -155,13 +174,12 @@ def save_vocab_info_to_cache(vocab: str, language: str, data: Dict[str, Any]) ->
             document["created_at"] = existing.get("created_at", now)
             collection.update_one(
                 {"_id": cache_key},
-                {"$set": document},
-                max_time_ms=5000
+                {"$set": document}
             )
         else:
             # Insert new document
             document["created_at"] = now
-            collection.insert_one(document, max_time_ms=5000)
+            collection.insert_one(document)
             
     except (pymongo.errors.ServerSelectionTimeoutError,
             pymongo.errors.NetworkTimeout,
