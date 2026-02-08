@@ -3,11 +3,11 @@ Prompt template cho LLM để lấy thông tin từ vựng
 """
 
 VOCAB_INFO_PROMPT_TEMPLATE = """
-Bạn là một chuyên gia ngôn ngữ học. Nhiệm vụ của bạn là phân tích từ vựng tiếng Anh "{vocab}" và trả về thông tin chi tiết bằng ngôn ngữ {language}.
+Bạn là một chuyên gia ngôn ngữ học. Nhiệm vụ của bạn là phân tích từ vựng tiếng Anh/Trung Quốc "{vocab}" và trả về thông tin chi tiết bằng ngôn ngữ {language}.
 
 YÊU CẦU QUAN TRỌNG:
 - TẤT CẢ nội dung trả về (examples, synonyms, origin) PHẢI được viết bằng {language}
-- Chỉ có câu ví dụ (sentence) được viết bằng tiếng Anh
+- Chỉ có câu ví dụ (sentence) được viết bằng tiếng Anh/Trung Quốc
 - Bản dịch (translation) và tất cả giải thích khác PHẢI bằng {language}
 
 Hãy trả về một JSON object với format chính xác sau (KHÔNG có markdown, KHÔNG có code block, chỉ JSON thuần):
@@ -18,17 +18,17 @@ Hãy trả về một JSON object với format chính xác sau (KHÔNG có markd
   "examples": [
     {{
       "level": "easy",
-      "sentence": "Câu ví dụ dễ bằng tiếng Anh",
+      "sentence": "Câu ví dụ dễ bằng tiếng Anh/Trung Quốc",
       "translation": "Giải thích hoặc dịch bằng {language}"
     }},
     {{
       "level": "medium",
-      "sentence": "Câu ví dụ trung bình bằng tiếng Anh",
+      "sentence": "Câu ví dụ trung bình bằng tiếng Anh/Trung Quốc",
       "translation": "Giải thích hoặc dịch bằng {language}"
     }},
     {{
       "level": "hard",
-      "sentence": "Câu ví dụ khó bằng tiếng Anh",
+      "sentence": "Câu ví dụ khó bằng tiếng Anh/Trung Quốc",
       "translation": "Giải thích hoặc dịch bằng {language}"
     }}
   ],
@@ -53,7 +53,7 @@ QUY TẮC:
 2. Synonyms: Liệt kê các từ đồng nghĩa phổ biến, mỗi từ có giải thích bằng {language}
 3. Origin: Giải thích nguồn gốc từ (etymology) và bối cảnh lịch sử (nếu có) bằng {language}
 4. Tất cả giải thích, dịch thuật, và mô tả PHẢI bằng {language}
-5. Chỉ có trường "sentence" trong examples được viết bằng tiếng Anh
+5. Chỉ có trường "sentence" trong examples được viết bằng tiếng Anh/Trung Quốc
 
 Hãy trả về CHỈ JSON, không có text nào khác trước hoặc sau JSON.
 """
